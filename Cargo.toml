@@ -1,18 +1,15 @@
 [package]
 name = "python-librespot"
-version = "0.1.0"
-authors = ["Paul Lietar <paul@lietar.net>"]
+version = "0.2.0"
+authors = ["Paul Lietar <paul@lietar.net>, e-ru"]
 
 [lib]
 name = "librespot"
 crate-type = ["cdylib"]
 
 [dependencies]
-tokio-core = "0.1.2"
-futures = "0.1.0"
+tokio-core = "0.1.18"
+futures = "0.3"
 
-[dependencies.librespot]
-git = "https://github.com/plietar/librespot"
-
-[dependencies.cpython]
-git = "https://github.com/dgrunwald/rust-cpython.git"
+librespot = { git = "https://github.com/librespot-org/librespot.git", branch = "master" }
+cpython = { git = "https://github.com/dgrunwald/rust-cpython.git" }
