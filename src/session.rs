@@ -13,18 +13,18 @@ use webtoken::Token;
 use SpotifyId;
 
 py_class!(pub class Session |py| {
-    data session : librespot::session::Session;
+    data session : librespot::core::session::Session;
     data handle: Remote;
 
     @classmethod def connect(_cls, username: String, password: String) -> PyResult<PyFuture> {
-        use librespot::session::Config;
-        use librespot::authentication::Credentials;
+        use librespot::core::config::SessionConfig;
+        use librespot::core::authentication::Credentials;
 
-        let config = Config::default();
+        let config = SessionConfig::default();
         let credentials = Credentials::with_password(username, password);
 
-        let (session_tx, session_rx) = futures::sync::oneshot::channel();
-        let (handle_tx, handle_rx) = futures::sync::oneshot::channel();
+        let (session_tx, session_rx) = futures::channel::oneshot::channel();
+        let (handle_tx, handle_rx) = futures::channel::oneshot::channel();
 
         thread::spawn(move || {
             let mut core = Core::new().unwrap();
@@ -32,11 +32,11 @@ py_class!(pub class Session |py| {
 
             let _ = handle_tx.send(handle.remote().clone());
 
-            let session = core.run(librespot::session::Session::connect(config, credentials, None, handle)).unwrap();
+            let session = core.run(librespot::core::session::Session::connect(config, credentials, None, handle)).unwrap();
 
             let _ = session_tx.send(session);
 
-            core.run(futures::future::empty::<(), ()>()).unwrap();
+            core.run(futures::io::empty::<(), ()>()).unwrap();
         });
 
         let handle = handle_rx.wait().unwrap();
