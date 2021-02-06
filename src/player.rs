@@ -5,7 +5,7 @@ use pyfuture::PyFuture;
 use tokio_core::reactor::Remote;
 
 py_class!(pub class Player |py| {
-    data player : librespot::player::Player;
+    data player : librespot::playback::player::Player;
     data handle: Remote;
 
     def load(&self, track: SpotifyId, play: bool = true, position_ms: u32 = 0) -> PyResult<PyFuture> {
@@ -33,9 +33,12 @@ py_class!(pub class Player |py| {
 });
 
 impl Player {
-    pub fn new(py: Python, session: librespot::session::Session, handle: Remote) -> PyResult<Player> {
-        let backend = librespot::audio_backend::find(None).unwrap();
-        let player = librespot::player::Player::new(session, None, move || (backend)(None));
+    pub fn new(py: Python, session: librespot::core::session::Session, handle: Remote) -> PyResult<Player> {
+        use librespot::playback::config::PlayerConfig;
+
+        let config = PlayerConfig::default();
+        let backend = librespot::playback::audio_backend::find(None).unwrap();
+        let player = librespot::playback::player::Player::new(config, session, None, move || (backend)(None));
         Player::create_instance(py, player, handle)
     }
 }
