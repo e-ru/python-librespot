@@ -8,6 +8,10 @@ name = "librespot"
 crate-type = ["cdylib"]
 
 [dependencies]
+alsa = { version = "0.4", optional = true }
+keyring = { version = "0.10.1", optional = true }
+dbus = { version = "0.6", optional = true }
+dbus-tokio = { version = "0.2", optional = true }
 tokio-core = "0.1"
 futures = "0.1"
 
@@ -20,3 +24,12 @@ git = "https://github.com/e-ru/librespot.git"
 branch = "send"
 default-features = false
 features = ["with-tremor"]
+
+[features]
+alsa_backend = ["librespot/alsa-backend", "alsa"]
+dbus_keyring = ["keyring"]
+dbus_mpris = ["dbus", "dbus-tokio"]
+default = ["alsa_backend"]
+portaudio_backend = ["librespot/portaudio-backend"]
+pulseaudio_backend = ["librespot/pulseaudio-backend"]
+rodio_backend = ["librespot/rodio-backend"]

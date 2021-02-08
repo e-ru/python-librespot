@@ -1,4 +1,4 @@
-use cpython::{PyClone, PyObject, PyResult};
+use cpython::{PyObject, PyResult};
 use futures;
 use futures::Future;
 use librespot;
@@ -14,14 +14,11 @@ use SpotifyId;
 
 py_class!(pub class Session |py| {
     data session : librespot::core::session::Session;
-    data device: PyObject;
     data handle: Remote;
 
-    @classmethod def connect(_cls, username: String, password: String, device: PyObject) -> PyResult<PyObject> {
+    @classmethod def connect(_cls, username: String, password: String) -> PyResult<PyObject> {
         use librespot::core::config::SessionConfig;
         use librespot::core::authentication::Credentials;
-
-        println!("LibRespot: device = {:?}", device);
 
         let config = SessionConfig::default();
         let credentials = Credentials::with_password(username, password);
@@ -46,16 +43,15 @@ py_class!(pub class Session |py| {
 
         py_wrap_future(py, handle.clone(), session_rx, move |py, result| {
             let session = result.unwrap();
-            Session::create_instance(py, session, device, handle)
+            Session::create_instance(py, session, handle)
         })
     }
 
     def player(&self) -> PyResult<Player> {
         let session = self.session(py).clone();
         let handle = self.handle(py).clone();
-        let device = self.device(py).clone_ref(py);
 
-        Player::new(py, session, device, handle)
+        Player::new(py, session, handle)
     }
 
     def get_track(&self, track: SpotifyId) -> PyResult<PyObject> {
