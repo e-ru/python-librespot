@@ -16,7 +16,7 @@ py_class!(pub class SpotifyId |py| {
     data id : librespot::core::spotify_id::SpotifyId;
 
     def __new__(_cls, base62: &str) -> PyResult<SpotifyId> {
-        let id = librespot::core::spotify_id::SpotifyId::from_base62(base62);
+        let id = librespot::core::spotify_id::SpotifyId::from_base62(base62).unwrap();
         SpotifyId::create_instance(py, id)
     }
 });
