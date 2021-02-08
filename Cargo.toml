@@ -1,15 +1,22 @@
 [package]
 name = "python-librespot"
-version = "0.2.0"
-authors = ["Paul Lietar <paul@lietar.net>, e-ru"]
+version = "0.1.0"
+authors = ["Paul Lietar <paul@lietar.net>"]
 
 [lib]
 name = "librespot"
 crate-type = ["cdylib"]
 
 [dependencies]
-tokio-core = "0.1.18"
-futures = "0.3"
+tokio-core = "0.1"
+futures = "0.1"
 
-librespot = { git = "https://github.com/librespot-org/librespot.git", branch = "master" }
-cpython = { git = "https://github.com/dgrunwald/rust-cpython.git" }
+[dependencies.cpython]
+version = "0.5"
+features = ["extension-module"]
+
+[dependencies.librespot]
+git = "https://github.com/e-ru/librespot.git"
+branch = "send"
+default-features = false
+features = ["with-tremor"]
